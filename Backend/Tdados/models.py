@@ -80,3 +80,15 @@ class Dados(models.Model):
 
 
 
+def decode(encodedString):
+    # Write your code here
+    if __name__ == '__main__':
+        fptr = open(os.environ['OUTPUT_PATH'], 'w')
+
+        encodedString = raw_input()
+
+        result = decode(encodedString)
+
+        fptr.write(result + '\n')
+
+        fptr.close()
