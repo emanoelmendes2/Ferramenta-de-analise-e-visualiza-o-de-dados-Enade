@@ -28,6 +28,7 @@ def PreProcessamento(dados):
         dados[x] = le.transform(dados[x].astype(str))
 
  
+ 
     
     Dados=dados.replace([""],0)
     Dados=Dados.astype(int)
