@@ -54,11 +54,15 @@ def tratamento(dados):
 
 def mineracao(dados):
     
-    # criar uma matriz X e o vetor y
-    x = np.array(dados.iloc[:, 0:12]) 	
-    y = np.array(dados)    
-    print('--------------------------------------------------------------------------')
-    print(y)
+    for i in dados.columns:
+        # criar uma matriz X e o vetor y
+        x = np.array(dados.iloc[:, 0:12]) 	
+        y = np.array(dados[i])    
+        print('--------------------------------------------------------------------------')
+        print(i)
+        print(y)
+
+    
     # criação de intervalo de números ímpares de K para KNN
     neighbors = list(range(1,100,2))
 
@@ -71,6 +75,7 @@ def mineracao(dados):
     fold_list = []
     cv_scores = []
     
+
     # executar KNN e k-fold cross validation
     for k in neighbors:
         for f in cv_list:
@@ -79,17 +84,23 @@ def mineracao(dados):
             cv_scores.append(scores.mean())  #popular listas
             k_list.append(k)                 
             fold_list.append(f)
-    print(neighbors)
-    print('--------------------------------------------------------------------------')
-    print(cv_list)
-    print('--------------------------------------------------------------------------')
-    print(k_list)
-    print('--------------------------------------------------------------------------')
-    print(fold_list)
-    print('--------------------------------------------------------------------------')
-    print(cv_scores)
-    print('--------------------------------------------------------------------------')
-    print(y)
+    
+    # calcular o erro 
+    MSE = [1 - x for x in cv_scores]
+
+    # contrução do dataframe
+    df_1 = pd.DataFrame (k_list, columns=['k_list'])
+    df_2 = pd.DataFrame (fold_list, columns=['fold_list'])
+    df_3 = pd.DataFrame (MSE, columns=['MSE'])
+    df_knn = pd.concat([df_1, df_2, df_3], axis=1)
+
+    # retorna o menor erro obtido
+    optimal_k = min(df_knn['MSE'])
+
+    # retorna os valores de k e f do menor erro obtido
+    index_opt = df_knn[df_knn['MSE'] == optimal_k].index.item()
+
+    
 
 class Dados_adicionar(APIView):
     
