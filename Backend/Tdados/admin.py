@@ -8,3 +8,7 @@ class DadosAdmin(admin.ModelAdmin):
 @admin.register(Enade)
 class EnadeAdmin(admin.ModelAdmin):
     pass
+
+@admin.register(Estado)
+class EstadoAdmin(admin.ModelAdmin):
+    pass

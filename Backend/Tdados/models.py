@@ -3,6 +3,9 @@ from django.db import models
 class Enade(models.Model):
     ano = models.CharField(max_length= 16,blank= True, null=True, unique=True)
 
+class Estado(models.Model):
+    id = models.IntegerField(primary_key=True)
+    estado = models.CharField(max_length= 20,blank= True, null=True, unique=True)
 
 class Dados(models.Model):
     codigoInstituicao = models.IntegerField(blank= True, null=True)
@@ -76,7 +79,7 @@ class Dados(models.Model):
     questao67 = models.CharField(max_length= 16,blank= True, null=True)
     questao68 = models.CharField(max_length= 16,blank= True, null=True)
     enade = models.ForeignKey(Enade, on_delete=models.CASCADE, blank= True, null=True )
-
+    estado = models.ForeignKey(Estado, on_delete=models.CASCADE, blank= True, null=True )
 
 
 

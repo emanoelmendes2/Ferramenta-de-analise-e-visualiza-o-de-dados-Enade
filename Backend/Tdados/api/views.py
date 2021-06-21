@@ -6,27 +6,33 @@ from django.contrib.auth.models import User, Group
 from django.template import loader
 from .serializers import *
 from ..models import *
-import csv
 import pandas as pd
+import csv
 import numpy as np
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import cross_val_score
 from sklearn import preprocessing
 from sklearn.multioutput import MultiOutputClassifier
 
-import matplotlib.pyplot as plt
-from mpl_toolkits import mplot3d
     
     
 def PreProcessamento(dados):
+    # CO_UF_CURSO
+    
+    # dados=dados.drop(['NU_ANO','CO_CATEGAD','CO_UF_CURSO','CO_REGIAO_CURSO','TP_INSCRICAO_ADM','TP_INSCRICAO','NU_ITEM_OFG','NU_ITEM_OFG_Z','NU_ITEM_OFG_X','NU_ITEM_OFG_N','NU_ITEM_OCE','NU_ITEM_OCE_Z','NU_ITEM_OCE_X','NU_ITEM_OCE_N','DS_VT_GAB_OFG_ORIG','DS_VT_GAB_OFG_FIN','DS_VT_GAB_OCE_ORIG','DS_VT_GAB_OCE_FIN','DS_VT_ESC_OFG','DS_VT_ACE_OFG','DS_VT_ESC_OCE','DS_VT_ACE_OCE','TP_PR_OB_FG','TP_PR_DI_FG','TP_PR_OB_CE','TP_PR_DI_CE','TP_SFG_D1','TP_SFG_D2','TP_SCE_D2','TP_SCE_D3','NT_GER','NT_FG','NT_OBJ_FG','NT_DIS_FG','NT_FG_D1','NT_FG_D1_PT','NT_FG_D1_CT','NT_FG_D2','NT_FG_D2_PT','NT_FG_D2_CT','NT_CE','NT_OBJ_CE','NT_DIS_CE','NT_CE_D1','NT_CE_D2','NT_CE_D3','CO_RS_I1','CO_RS_I2','CO_RS_I3','CO_RS_I4', 'CO_RS_I5','CO_RS_I6', 'CO_RS_I7','CO_RS_I8','CO_RS_I9','QE_I03','QE_I06','QE_I10','QE_I14','QE_I18','QE_I19','QE_I20','QE_I24','QE_I25','QE_I26','QE_I69','QE_I70','QE_I71','QE_I72','QE_I73','QE_I74','QE_I75','QE_I76','QE_I77','QE_I78','QE_I79','QE_I80','QE_I81'], axis=1) # excluir as colunas que não serão utilizadas no modelo
+
+    print(dados)
     
     dados.fillna("",  inplace=True) #Os campos nulos estão sendo substituidos por strig vazia  
-    
-    
+    print('---------------------------------------------------')
+    print(dados)
     #dados.drop(['NU_ANO','CO_CATEGAD','CO_REGIAO_CURSO','TP_INSCRICAO_ADM','TP_INSCRICAO','NU_ITEM_OFG','NU_ITEM_OFG_Z','NU_ITEM_OFG_X','NU_ITEM_OFG_N','NU_ITEM_OCE','NU_ITEM_OCE_Z','NU_ITEM_OCE_X','NU_ITEM_OCE_N','DS_VT_GAB_OFG_ORIG','DS_VT_GAB_OFG_FIN','DS_VT_GAB_OCE_ORIG','DS_VT_GAB_OCE_FIN','DS_VT_ESC_OFG','DS_VT_ACE_OFG','DS_VT_ESC_OCE','DS_VT_ACE_OCE','TP_PR_OB_FG','TP_PR_DI_FG','TP_PR_OB_CE','TP_PR_DI_CE','TP_SFG_D1','TP_SFG_D2','TP_SCE_D2','TP_SCE_D3','NT_GER','NT_FG','NT_OBJ_FG','NT_DIS_FG','NT_FG_D1','NT_FG_D1_PT','NT_FG_D1_CT','NT_FG_D2','NT_FG_D2_PT','NT_FG_D2_CT','NT_CE','NT_OBJ_CE','NT_DIS_CE','NT_CE_D1','NT_CE_D2','NT_CE_D3','CO_RS_I1','CO_RS_I2','CO_RS_I3','CO_RS_I4','CO_RS_I7','CO_RS_I8','CO_RS_I9','QE_I03','QE_I06','QE_I10','QE_I14','QE_I18','QE_I19','QE_I20','QE_I24','QE_I25','QE_I26','QE_I69','QE_I70','QE_I71','QE_I72','QE_I73','QE_I74','QE_I75','QE_I76','QE_I77','QE_I78','QE_I79','QE_I80','QE_I81'], axis=1) # excluir as colunas que não serão utilizadas no modelo
     #non_numerical = ['TP_SEXO','QE_I01','QE_I02','QE_I04','QE_I05','QE_I07','QE_I08','QE_I09','QE_I11','QE_I12','QE_I13','QE_I15','QE_I17','QE_I21','QE_I22','QE_I23']
-    #dados 'CO_IES','CO_ORGACAD','CO_GRUPO','CO_CURSO','CO_MODALIDADE','CO_MUNIC_CURSO','NU_IDADE','TP_SEXO','ANO_FIM_EM','ANO_IN_GRAD','CO_TURNO_GRADUACAO','TP_PRES','QE_I01','QE_I02','QE_I04','QE_I05','QE_I07','QE_I08','QE_I09','QE_I11','QE_I12','QE_I13','QE_I15','QE_I16','QE_I17','QE_I21','QE_I22','QE_I23','QE_I27','QE_I28','QE_I29','QE_I30','QE_I31','QE_I32','QE_I33','QE_I34','QE_I35','QE_I36','QE_I37','QE_I38','QE_I39','QE_I40','QE_I41','QE_I42','QE_I43','QE_I44','QE_I45','QE_I46','QE_I47','QE_I48','QE_I49','QE_I50','QE_I51','QE_I52','QE_I53','QE_I54','QE_I55','QE_I56','QE_I57','QE_I58','QE_I59','QE_I60','QE_I61','QE_I62','QE_I63','QE_I64','QE_I65','QE_I66','QE_I67','QE_I68'
+    #dados 
+    # 'CO_IES','CO_ORGACAD','CO_GRUPO','CO_CURSO','CO_MODALIDADE','CO_MUNIC_CURSO','NU_IDADE','TP_SEXO','ANO_FIM_EM','ANO_IN_GRAD','CO_TURNO_GRADUACAO','TP_PRES','QE_I01','QE_I02','QE_I04','QE_I05','QE_I07','QE_I08','QE_I09','QE_I11','QE_I12','QE_I13','QE_I15','QE_I16','QE_I17','QE_I21','QE_I22','QE_I23','QE_I27','QE_I28','QE_I29','QE_I30','QE_I31','QE_I32','QE_I33','QE_I34','QE_I35','QE_I36','QE_I37','QE_I38','QE_I39','QE_I40','QE_I41','QE_I42','QE_I43','QE_I44','QE_I45','QE_I46','QE_I47','QE_I48','QE_I49','QE_I50','QE_I51','QE_I52','QE_I53','QE_I54','QE_I55','QE_I56','QE_I57','QE_I58','QE_I59','QE_I60','QE_I61','QE_I62','QE_I63','QE_I64','QE_I65','QE_I66','QE_I67','QE_I68'
     
+    # id - Estado 
+
     non_numerical = ['TP_SEXO','QE_I01','QE_I02','QE_I04','QE_I05','QE_I07','QE_I08','QE_I09','QE_I11','QE_I12','QE_I13','QE_I15','QE_I17','QE_I21','QE_I22','QE_I23']
     le = preprocessing.LabelEncoder()
     for x in non_numerical:
@@ -35,15 +41,19 @@ def PreProcessamento(dados):
         dados[x] = le.transform(dados[x].astype(str))
 
  
- 
+    
     
     Dados=dados.replace([""],0)
+    print('---------------------------------------------------')
+    print(dados)
+
+    f = open('testes3.csv', 'w', newline='')
+    Dados.to_csv(f, encoding='utf-8', index=False)   
+
     Dados=Dados.astype(int)
-    #print(Dados)
     
    
-    #f = open('testes1.csv', 'w', newline='')
-    #Dados.to_csv(f, encoding='utf-8', index=False)   
+    
     return Dados
     
 
@@ -123,24 +133,34 @@ class Dados_adicionar(APIView):
         serializer = DadosSerializer(dados, many=True)
         return Response(serializer.data)
 
-
-
-
-
     def post(self, request, format=None):
+        # estado = Estado.objects.get(estado=request.data["estado"])
+
+        
         enade = Enade()
         enade.ano = request.data["ano"]
         enade.save()
+    
+
 
         arq = request.data["arquivo"]
         
         dados = pd.read_csv(arq, encoding = "UTF-8-sig", sep=";")
+
         
+        # dados=dados.loc[dados['CO_UF_CURSO'] == (estado.id)]
+
+        
+
         dados = PreProcessamento(dados)
-
         dados = tratamento(dados)
+        # dados1 = mineracao(dados)
+        
 
-        dados1 = mineracao(dados)
+
+         
+        
+         
         
         objetos = []
         for i in range(dados.shape[0]):
@@ -152,7 +172,7 @@ class Dados_adicionar(APIView):
             obj_dados.modalidadeEnsino = dados.loc[i, 'Modalidade_Ensino']
             obj_dados.municipioCurso = dados.loc[i, 'municipio_curso']
             obj_dados.idade = dados.loc[i, 'Idade']
-            obj_dados.sexo = dados.loc[i, 'Sexo'] 
+            obj_dados.sexo = dados.loc[i, 'Sexo']
             obj_dados.anoFinalEM = dados.loc[i, 'Ano_Final_EM']
             obj_dados.iniciograd = dados.loc[i, 'Inicio_Grad.']
             obj_dados.turnoGrad = dados.loc[i, 'Turno_Grad.']
@@ -216,56 +236,119 @@ class Dados_adicionar(APIView):
             obj_dados.questao67 = dados.loc[i, 'Questao_67']
             obj_dados.questao68 = dados.loc[i, 'Questao_68']
             obj_dados.enade = enade
+            # obj_dados.estado = estado
             objetos.append(obj_dados)
         Dados.objects.bulk_create(objetos) #bulk_create insere obj contidos em um array no banco de dados
-
+        
         dados = Dados.objects.filter(enade=enade)
         serializer = DadosSerializer(dados, many=True).data
-
+        
         if serializer:
             return Response(serializer, status=201)
         return Response({"erro":""}, status=400)
 
 
+ 
+class ano_get(APIView):
+    
+    permission_classes = [permissions.AllowAny, ]
+    def get(self, request, format=None):
+        enade = Enade.objects.all().values('ano')
+        return  Response(enade, status=200)
 
+class processar_api(APIView):
+    
+    permission_classes = [permissions.AllowAny, ]
 
-     
+    def post(self, request, format=None):
+        enade = Enade.objects.get(ano=request.data["ano"])
+        if(enade):
+            dados = Dados.objects.filter(enade=enade)
+            colums = request.data["colums"]
 
+            colum_converter = {
+            'Codigo_instituicao': 'codigoInstituicao' ,
+            'org_academica': 'orgAcademica' ,
+            'area_curso': 'areaCurso' ,
+            'Codigo_curso': 'codigoCurso' ,
+            'Modalidade_Ensino': 'modalidadeEnsino' ,
+            'municipio_curso': 'municipioCurso' ,
+            'Idade': 'idade' ,
+            'Sexo': 'sexo' ,
+            'Ano_Final_EM': 'anoFinalEM' ,
+            'Inicio_Grad.': 'iniciograd',
+            'Turno_Grad.':'turnoGrad',
+            'Presenca_Enade': 'presencaenad',
+            'Questao_01':'questao01',
+            'Questao_02':'questao02',
+            'Questao_04':'questao04',
+            'Questao_05':'questao05',
+            'Questao_07':'questao07',
+            'Questao_08':'questao08',
+            'Questao_09':'questao09',
+            'Questao_11':'questao11',
+            'Questao_12':'questao12',
+            'Questao_13':'questao13',
+            'Questao_15':'questao15',
+            'Questao_16':'questao16',
+            'Questao_17':'questao17',
+            'Questao_21':'questao21',
+            'Questao_22':'questao22',
+            'Questao_23':'questao23',
+            'Questao_27':'questao27',
+            'Questao_28':'questao28',
+            'Questao_29':'questao29',
+            'Questao_30':'questao30',
+            'Questao_31':'questao31',
+            'Questao_32':'questao32',
+            'Questao_33':'questao33',
+            'Questao_34':'questao34',
+            'Questao_35':'questao35',
+            'Questao_36':'questao36',
+            'Questao_37':'questao37',
+            'Questao_38':'questao38',
+            'Questao_39':'questao39',
+            'Questao_40':'questao40',
+            'Questao_41':'questao41',
+            'Questao_42':'questao42',
+            'Questao_43':'questao43',
+            'Questao_44':'questao44',
+            'Questao_45':'questao45',
+            'Questao_46':'questao46',
+            'Questao_47':'questao47',
+            'Questao_48':'questao48',
+            'Questao_49':'questao49',
+            'Questao_50':'questao50',
+            'Questao_51':'questao51',
+            'Questao_52':'questao52',
+            'Questao_53':'questao53',
+            'Questao_54':'questao54',
+            'Questao_55':'questao55',
+            'Questao_56':'questao56',
+            'Questao_57':'questao57',
+            'Questao_58':'questao58',
+            'Questao_59':'questao59',
+            'Questao_60':'questao60',
+            'Questao_61':'questao61',
+            'Questao_62':'questao62',
+            'Questao_63':'questao63',
+            'Questao_64':'questao64',
+            'Questao_65':'questao65',
+            'Questao_66':'questao66',
+            'Questao_67':'questao67',
+            'Questao_68':'questao68'}
 
-# class DadosList(APIView):
+            teste_colum = []
 
-#     """
-#     List all snippets, or create a new snippet.
-#     """
+            print(request.data)
+            for colum in request.data["colums"]:
+                print(colum)
+                print(colum_converter[colum])
+                for line in dados:
+                    
+                    teste_colum.append(line['orgAcademica'])
 
-#     def get(self, request, format=None):
-#         dados = Dados.objects.all()
-#         serializer = DadosSerializer(dados, many=True)
-#         return Response(serializer.data)
-
-#     def post(self, request, format=None):
-#         dados = dados()
-#         group = Group.objects.get(name=request.data["tipo"])
-
-#         login = request.data["login"]
-#         senha = request.data["senha"]
-#         if User.objects.filter(username=login).exists():
-#             return Response({"message":"Usuário já existe!",'sucesso':False}, status=400)
-#         user = User.objects.create_user(login, request.data["email"], senha)
-        
-#         funcionario.tipo = request.data["tipo"]
-#         funcionario.nome = request.data["nome"]
-#         funcionario.cpf = request.data["cpf"]
-#         funcionario.email = request.data["email"]
-#         funcionario.cargo = request.data["cargo"]
-#         funcionario.usuario = user
-#         funcionario.save()
-#         if funcionario:
-#             if group:
-#                 funcionario.usuario.groups.add(group)
-        
-#         funcionario_data = FuncionarioSerializer([funcionario], many=True).data
-        
-#         if funcionario:
-#             return Response({"funcionario":funcionario_data}, status=201)
-#         return Response({"funcionario":None}, status=400)
+            
+            print(teste_colum)
+        return  Response({'deucerto':teste_colum}, status=200)
+        # estado = Estado.objects.get(estado=request.data["estado"])
