@@ -1,3 +1,0 @@
-Cycler
-Django
-Pillow

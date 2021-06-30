@@ -78,8 +78,11 @@ class Dados(models.Model):
     questao66 = models.CharField(max_length= 16,blank= True, null=True)
     questao67 = models.CharField(max_length= 16,blank= True, null=True)
     questao68 = models.CharField(max_length= 16,blank= True, null=True)
+    # visinhos = models.CharField(max_length= 16,blank= True, null=True)
+    # dobras = models.CharField(max_length= 16,blank= True, null=True)
+    # erro = models.CharField(max_length= 16,blank= True, null=True)
     enade = models.ForeignKey(Enade, on_delete=models.CASCADE, blank= True, null=True )
-    estado = models.ForeignKey(Estado, on_delete=models.CASCADE, blank= True, null=True )
+    # estado = models.ForeignKey(Estado, on_delete=models.CASCADE, blank= True, null=True )
 
 
 

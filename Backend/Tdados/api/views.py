@@ -12,26 +12,21 @@ import numpy as np
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import cross_val_score
 from sklearn import preprocessing
-from sklearn.multioutput import MultiOutputClassifier
 
     
     
 def PreProcessamento(dados):
     # CO_UF_CURSO
-    
-    # dados=dados.drop(['NU_ANO','CO_CATEGAD','CO_UF_CURSO','CO_REGIAO_CURSO','TP_INSCRICAO_ADM','TP_INSCRICAO','NU_ITEM_OFG','NU_ITEM_OFG_Z','NU_ITEM_OFG_X','NU_ITEM_OFG_N','NU_ITEM_OCE','NU_ITEM_OCE_Z','NU_ITEM_OCE_X','NU_ITEM_OCE_N','DS_VT_GAB_OFG_ORIG','DS_VT_GAB_OFG_FIN','DS_VT_GAB_OCE_ORIG','DS_VT_GAB_OCE_FIN','DS_VT_ESC_OFG','DS_VT_ACE_OFG','DS_VT_ESC_OCE','DS_VT_ACE_OCE','TP_PR_OB_FG','TP_PR_DI_FG','TP_PR_OB_CE','TP_PR_DI_CE','TP_SFG_D1','TP_SFG_D2','TP_SCE_D2','TP_SCE_D3','NT_GER','NT_FG','NT_OBJ_FG','NT_DIS_FG','NT_FG_D1','NT_FG_D1_PT','NT_FG_D1_CT','NT_FG_D2','NT_FG_D2_PT','NT_FG_D2_CT','NT_CE','NT_OBJ_CE','NT_DIS_CE','NT_CE_D1','NT_CE_D2','NT_CE_D3','CO_RS_I1','CO_RS_I2','CO_RS_I3','CO_RS_I4', 'CO_RS_I5','CO_RS_I6', 'CO_RS_I7','CO_RS_I8','CO_RS_I9','QE_I03','QE_I06','QE_I10','QE_I14','QE_I18','QE_I19','QE_I20','QE_I24','QE_I25','QE_I26','QE_I69','QE_I70','QE_I71','QE_I72','QE_I73','QE_I74','QE_I75','QE_I76','QE_I77','QE_I78','QE_I79','QE_I80','QE_I81'], axis=1) # excluir as colunas que não serão utilizadas no modelo
 
-    print(dados)
+    # dados=dados.drop(['NU_ANO','CO_CATEGAD','CO_UF_CURSO','CO_REGIAO_CURSO','TP_INSCRICAO_ADM','TP_INSCRICAO','NU_ITEM_OFG','NU_ITEM_OFG_Z','NU_ITEM_OFG_X','NU_ITEM_OFG_N','NU_ITEM_OCE','NU_ITEM_OCE_Z','NU_ITEM_OCE_X','NU_ITEM_OCE_N','DS_VT_GAB_OFG_ORIG','DS_VT_GAB_OFG_FIN','DS_VT_GAB_OCE_ORIG','DS_VT_GAB_OCE_FIN','DS_VT_ESC_OFG','DS_VT_ACE_OFG','DS_VT_ESC_OCE','DS_VT_ACE_OCE','TP_PR_GER','TP_PR_OB_FG','TP_PR_DI_FG','TP_PR_OB_CE','TP_PR_DI_CE','TP_SFG_D1','TP_SFG_D2','TP_SCE_D1','TP_SCE_D2','TP_SCE_D3','NT_GER','NT_FG','NT_OBJ_FG','NT_DIS_FG','NT_FG_D1','NT_FG_D1_PT','NT_FG_D1_CT','NT_FG_D2','NT_FG_D2_PT','NT_FG_D2_CT','NT_CE','NT_OBJ_CE','NT_DIS_CE','NT_CE_D1','NT_CE_D2','NT_CE_D3','CO_RS_I1','CO_RS_I2','CO_RS_I3','CO_RS_I4', 'CO_RS_I5','CO_RS_I6', 'CO_RS_I7','CO_RS_I8','CO_RS_I9','QE_I03','QE_I06','QE_I10','QE_I14','QE_I18','QE_I19','QE_I20','QE_I24','QE_I25','QE_I26','QE_I69','QE_I70','QE_I71','QE_I72','QE_I73','QE_I74','QE_I75','QE_I76','QE_I77','QE_I78','QE_I79','QE_I80','QE_I81'], axis=1) # excluir as colunas que não serão utilizadas no modelo
     
     dados.fillna("",  inplace=True) #Os campos nulos estão sendo substituidos por strig vazia  
-    print('---------------------------------------------------')
-    print(dados)
-    #dados.drop(['NU_ANO','CO_CATEGAD','CO_REGIAO_CURSO','TP_INSCRICAO_ADM','TP_INSCRICAO','NU_ITEM_OFG','NU_ITEM_OFG_Z','NU_ITEM_OFG_X','NU_ITEM_OFG_N','NU_ITEM_OCE','NU_ITEM_OCE_Z','NU_ITEM_OCE_X','NU_ITEM_OCE_N','DS_VT_GAB_OFG_ORIG','DS_VT_GAB_OFG_FIN','DS_VT_GAB_OCE_ORIG','DS_VT_GAB_OCE_FIN','DS_VT_ESC_OFG','DS_VT_ACE_OFG','DS_VT_ESC_OCE','DS_VT_ACE_OCE','TP_PR_OB_FG','TP_PR_DI_FG','TP_PR_OB_CE','TP_PR_DI_CE','TP_SFG_D1','TP_SFG_D2','TP_SCE_D2','TP_SCE_D3','NT_GER','NT_FG','NT_OBJ_FG','NT_DIS_FG','NT_FG_D1','NT_FG_D1_PT','NT_FG_D1_CT','NT_FG_D2','NT_FG_D2_PT','NT_FG_D2_CT','NT_CE','NT_OBJ_CE','NT_DIS_CE','NT_CE_D1','NT_CE_D2','NT_CE_D3','CO_RS_I1','CO_RS_I2','CO_RS_I3','CO_RS_I4','CO_RS_I7','CO_RS_I8','CO_RS_I9','QE_I03','QE_I06','QE_I10','QE_I14','QE_I18','QE_I19','QE_I20','QE_I24','QE_I25','QE_I26','QE_I69','QE_I70','QE_I71','QE_I72','QE_I73','QE_I74','QE_I75','QE_I76','QE_I77','QE_I78','QE_I79','QE_I80','QE_I81'], axis=1) # excluir as colunas que não serão utilizadas no modelo
+    
     #non_numerical = ['TP_SEXO','QE_I01','QE_I02','QE_I04','QE_I05','QE_I07','QE_I08','QE_I09','QE_I11','QE_I12','QE_I13','QE_I15','QE_I17','QE_I21','QE_I22','QE_I23']
     #dados 
     # 'CO_IES','CO_ORGACAD','CO_GRUPO','CO_CURSO','CO_MODALIDADE','CO_MUNIC_CURSO','NU_IDADE','TP_SEXO','ANO_FIM_EM','ANO_IN_GRAD','CO_TURNO_GRADUACAO','TP_PRES','QE_I01','QE_I02','QE_I04','QE_I05','QE_I07','QE_I08','QE_I09','QE_I11','QE_I12','QE_I13','QE_I15','QE_I16','QE_I17','QE_I21','QE_I22','QE_I23','QE_I27','QE_I28','QE_I29','QE_I30','QE_I31','QE_I32','QE_I33','QE_I34','QE_I35','QE_I36','QE_I37','QE_I38','QE_I39','QE_I40','QE_I41','QE_I42','QE_I43','QE_I44','QE_I45','QE_I46','QE_I47','QE_I48','QE_I49','QE_I50','QE_I51','QE_I52','QE_I53','QE_I54','QE_I55','QE_I56','QE_I57','QE_I58','QE_I59','QE_I60','QE_I61','QE_I62','QE_I63','QE_I64','QE_I65','QE_I66','QE_I67','QE_I68'
     
-    # id - Estado 
+    
 
     non_numerical = ['TP_SEXO','QE_I01','QE_I02','QE_I04','QE_I05','QE_I07','QE_I08','QE_I09','QE_I11','QE_I12','QE_I13','QE_I15','QE_I17','QE_I21','QE_I22','QE_I23']
     le = preprocessing.LabelEncoder()
@@ -40,24 +35,12 @@ def PreProcessamento(dados):
         # converte string em numero
         dados[x] = le.transform(dados[x].astype(str))
 
- 
-    
     
     Dados=dados.replace([""],0)
-    print('---------------------------------------------------')
-    print(dados)
-
-    f = open('testes3.csv', 'w', newline='')
-    Dados.to_csv(f, encoding='utf-8', index=False)   
-
     Dados=Dados.astype(int)
-    
-   
     
     return Dados
     
-
-
 def tratamento(dados):
     Dados=dados.rename(columns={'CO_IES':'Codigo_instituicao','CO_ORGACAD':'org_academica','CO_GRUPO':'area_curso','CO_CURSO':'Codigo_curso','CO_MODALIDADE':'Modalidade_Ensino','CO_MUNIC_CURSO':'municipio_curso','NU_IDADE':'Idade','TP_SEXO':'Sexo','ANO_FIM_EM':'Ano_Final_EM','ANO_IN_GRAD':'Inicio_Grad.','CO_TURNO_GRADUACAO':'Turno_Grad.','TP_PRES':'Presenca_Enade','QE_I01':'Questao_01','QE_I02':'Questao_02','QE_I04':'Questao_04','QE_I05':'Questao_05','QE_I07':'Questao_07','QE_I08':'Questao_08','QE_I09':'Questao_09','QE_I11':'Questao_11','QE_I12':'Questao_12','QE_I13':'Questao_13','QE_I15':'Questao_15','QE_I16':'Questao_16','QE_I17':'Questao_17','QE_I21':'Questao_21','QE_I22':'Questao_22','QE_I23':'Questao_23','QE_I27':'Questao_27','QE_I28':'Questao_28','QE_I29':'Questao_29','QE_I30':'Questao_30','QE_I31':'Questao_31','QE_I32':'Questao_32','QE_I33':'Questao_33','QE_I34':'Questao_34','QE_I35':'Questao_35','QE_I36':'Questao_36','QE_I37':'Questao_37','QE_I38':'Questao_38','QE_I39':'Questao_39','QE_I40':'Questao_40','QE_I41':'Questao_41','QE_I42':'Questao_42','QE_I43':'Questao_43','QE_I44':'Questao_44','QE_I45':'Questao_45','QE_I46':'Questao_46','QE_I47':'Questao_47','QE_I48':'Questao_48','QE_I49':'Questao_49','QE_I50':'Questao_50','QE_I51':'Questao_51','QE_I52':'Questao_52','QE_I53':'Questao_53','QE_I54':'Questao_54','QE_I55':'Questao_55','QE_I56':'Questao_56','QE_I57':'Questao_57','QE_I58':'Questao_58','QE_I59':'Questao_59','QE_I60':'Questao_60','QE_I61':'Questao_61','QE_I62':'Questao_62','QE_I63':'Questao_63','QE_I64':'Questao_64','QE_I65':'Questao_65','QE_I66':'Questao_66','QE_I67':'Questao_67','QE_I68':'Questao_68'})
     
@@ -74,7 +57,7 @@ def mineracao(dados):
         y = np.array(dados[i])    
 
 
-    # criação de intervalo de números ímpares de K para KNN
+    # criação de intervpipalo de números ímpares de K para KNN
     neighbors = list(range(1,100,2))
 
     # criação de intervalo de f para k-fold
@@ -96,29 +79,21 @@ def mineracao(dados):
             k_list.append(k)                 
             fold_list.append(f)
     
-    # calcular o erro 
+     
     MSE = [1 - x for x in cv_scores]
    
-    
-
-    # contrução do dataframe
     df_1 = pd.DataFrame (k_list, columns=['k_list'])
     df_2 = pd.DataFrame (fold_list, columns=['fold_list'])
     df_3 = pd.DataFrame (MSE, columns=['MSE'])
     df_knn = pd.concat([df_1, df_2, df_3], axis=1)
 
-    # retorna o menor erro obtido
     optimal_k = min(df_knn['MSE'])
 
-    # retorna os valores de k e f do menor erro obtido
     index_opt = df_knn[df_knn['MSE'] == optimal_k].index.item()
     
 
-    print(df_knn[df_knn['MSE'] == optimal_k].index)
-
-
     # printar os resultados
-    print ("O número ótimo de vizinhos k é %d" % df_knn.loc[index_opt, 'k_list'] )
+    print ("O número ótimo de k vizinhos é %d" % df_knn.loc[index_opt, 'k_list'] )
     print ("O número ideal de dobras f é %d" % df_knn.loc[index_opt, 'fold_list'] )
     print ("Erro de classificação incorreta é %f" % optimal_k )
 
@@ -134,37 +109,28 @@ class Dados_adicionar(APIView):
         return Response(serializer.data)
 
     def post(self, request, format=None):
+        # Tratamento do estado
         # estado = Estado.objects.get(estado=request.data["estado"])
 
-        
         enade = Enade()
         enade.ano = request.data["ano"]
         enade.save()
     
-
-
         arq = request.data["arquivo"]
         
         dados = pd.read_csv(arq, encoding = "UTF-8-sig", sep=";")
 
-        
         # dados=dados.loc[dados['CO_UF_CURSO'] == (estado.id)]
 
-        
-
+    
         dados = PreProcessamento(dados)
         dados = tratamento(dados)
         # dados1 = mineracao(dados)
-        
 
-
-         
-        
-         
-        
         objetos = []
         for i in range(dados.shape[0]):
             obj_dados = Dados()
+            # obj_dados.codigoInstituicao = dados.iloc[[i],[i]].values[1]
             obj_dados.codigoInstituicao = dados.loc[i, 'Codigo_instituicao']
             obj_dados.orgAcademica = dados.loc[i, 'org_academica']
             obj_dados.areaCurso = dados.loc[i, 'area_curso']
@@ -236,7 +202,6 @@ class Dados_adicionar(APIView):
             obj_dados.questao67 = dados.loc[i, 'Questao_67']
             obj_dados.questao68 = dados.loc[i, 'Questao_68']
             obj_dados.enade = enade
-            # obj_dados.estado = estado
             objetos.append(obj_dados)
         Dados.objects.bulk_create(objetos) #bulk_create insere obj contidos em um array no banco de dados
         
@@ -338,17 +303,31 @@ class processar_api(APIView):
             'Questao_67':'questao67',
             'Questao_68':'questao68'}
 
-            teste_colum = []
+            data_values = {}
 
-            print(request.data)
             for colum in request.data["colums"]:
-                print(colum)
-                print(colum_converter[colum])
                 for line in dados:
-                    
-                    teste_colum.append(line['orgAcademica'])
+                    if colum not in data_values:
+                        data_values[colum] = {}
+                        data_values[colum]['labels'] = []
+                    if colum == 'Questao_01':
+                        if line.questao01 not in data_values[colum]:
+                            data_values[colum][line.questao01] = 1
+                            data_values[colum]['labels'].append(str(line.questao01))
+                            data_values[colum]['labels'].sort()
+                        else:
+                            data_values[colum][line.questao01] += 1
+                    if colum == 'Questao_02':
+                        if line.questao02 not in data_values[colum]:
+                            data_values[colum][line.questao02] = 1
+                        else:
+                            data_values[colum][line.questao02] += 1
 
-            
-            print(teste_colum)
-        return  Response({'deucerto':teste_colum}, status=200)
+
+
+
+
+
+        return  Response(data_values, status=200)
         # estado = Estado.objects.get(estado=request.data["estado"])
+
