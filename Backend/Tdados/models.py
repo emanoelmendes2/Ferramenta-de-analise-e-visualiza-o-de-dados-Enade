@@ -1,5 +1,10 @@
 from django.db import models
 
+class Resultado(models.Model):
+    kVizinhos = models.CharField(max_length= 16,blank= True, null=True, unique=True)
+    dobrasF = models.CharField(max_length= 16,blank= True, null=True, unique=True)
+    erro = models.CharField(max_length= 16,blank= True, null=True, unique=True)
+
 class Enade(models.Model):
     ano = models.CharField(max_length= 16,blank= True, null=True, unique=True)
 
@@ -82,7 +87,7 @@ class Dados(models.Model):
     # dobras = models.CharField(max_length= 16,blank= True, null=True)
     # erro = models.CharField(max_length= 16,blank= True, null=True)
     enade = models.ForeignKey(Enade, on_delete=models.CASCADE, blank= True, null=True )
-    # estado = models.ForeignKey(Estado, on_delete=models.CASCADE, blank= True, null=True )
+    resultado = models.ForeignKey(Resultado, on_delete=models.CASCADE, blank= True, null=True )
 
 
 

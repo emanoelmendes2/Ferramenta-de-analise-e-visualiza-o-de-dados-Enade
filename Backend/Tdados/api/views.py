@@ -96,7 +96,7 @@ def mineracao(dados):
     print ("O número ótimo de k vizinhos é %d" % df_knn.loc[index_opt, 'k_list'] )
     print ("O número ideal de dobras f é %d" % df_knn.loc[index_opt, 'fold_list'] )
     print ("Erro de classificação incorreta é %f" % optimal_k )
-
+    return {'kVizinhos':df_knn.loc[index_opt, 'k_list'], 'dobrasF':df_knn.loc[index_opt, 'fold_list'], 'erro':optimal_k}
     
  
 class Dados_adicionar(APIView):
@@ -112,6 +112,7 @@ class Dados_adicionar(APIView):
         # Tratamento do estado
         # estado = Estado.objects.get(estado=request.data["estado"])
 
+
         enade = Enade()
         enade.ano = request.data["ano"]
         enade.save()
@@ -125,7 +126,14 @@ class Dados_adicionar(APIView):
     
         dados = PreProcessamento(dados)
         dados = tratamento(dados)
-        # dados1 = mineracao(dados)
+        dados1 = mineracao(dados)
+        resultado = Resultado()
+        resultado.kVizinhos = dados1['kVizinhos']
+        resultado.dobrasF = dados1['dobrasF']
+        resultado.erro = dados1['erro']
+        resultado.save()
+
+
 
         objetos = []
         for i in range(dados.shape[0]):
@@ -202,6 +210,7 @@ class Dados_adicionar(APIView):
             obj_dados.questao67 = dados.loc[i, 'Questao_67']
             obj_dados.questao68 = dados.loc[i, 'Questao_68']
             obj_dados.enade = enade
+            obj_dados.resultado = resultado
             objetos.append(obj_dados)
         Dados.objects.bulk_create(objetos) #bulk_create insere obj contidos em um array no banco de dados
         
@@ -304,29 +313,43 @@ class processar_api(APIView):
             'Questao_68':'questao68'}
 
             data_values = {}
-
             for colum in request.data["colums"]:
                 for line in dados:
                     if colum not in data_values:
                         data_values[colum] = {}
-                        data_values[colum]['labels'] = []
+                        # data_values[colum]['colum'] = []
+                        # data_values[colum]['alternativas'] = []
                     if colum == 'Questao_01':
+                        # if "Questao_01" not in data_values[colum]['colum']:
+                        #     data_values[colum]['colum'].append(colum)
                         if line.questao01 not in data_values[colum]:
                             data_values[colum][line.questao01] = 1
-                            data_values[colum]['labels'].append(str(line.questao01))
-                            data_values[colum]['labels'].sort()
+                            # data_values[colum]['alternativas'].append(str(line.questao01))
+                            # data_values[colum]['alternativas'].sort()
                         else:
                             data_values[colum][line.questao01] += 1
+
                     if colum == 'Questao_02':
+                        # if "Questao_02" not in data_values[colum]['colum']:
+                        #     data_values[colum]['colum'].append(colum)
                         if line.questao02 not in data_values[colum]:
                             data_values[colum][line.questao02] = 1
+                            # data_values[colum]['alternativas'].append(str(line.questao02))
+                            # data_values[colum]['alternativas'].sort()
                         else:
                             data_values[colum][line.questao02] += 1
 
+                    if colum == 'Questao_04':
+                        if line.questao04 not in data_values[colum]:
+                            data_values[colum][line.questao04] = 1
+                        else:
+                            data_values[colum][line.questao04] += 1
 
-
-
-
+                    if colum == 'Questao_05':
+                        if line.questao05 not in data_values[colum]:
+                            data_values[colum][line.questao05] = 1
+                        else:
+                            data_values[colum][line.questao05] += 1
 
         return  Response(data_values, status=200)
         # estado = Estado.objects.get(estado=request.data["estado"])

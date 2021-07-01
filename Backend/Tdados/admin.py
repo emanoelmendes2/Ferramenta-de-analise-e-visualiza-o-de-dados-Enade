@@ -12,3 +12,7 @@ class EnadeAdmin(admin.ModelAdmin):
 @admin.register(Estado)
 class EstadoAdmin(admin.ModelAdmin):
     pass
+
+@admin.register(Resultado)
+class ResultadoAdmin(admin.ModelAdmin):
+    pass
