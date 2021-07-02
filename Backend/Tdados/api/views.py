@@ -12,6 +12,7 @@ import numpy as np
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import cross_val_score
 from sklearn import preprocessing
+from django.core import serializers
 
     
     
@@ -115,8 +116,8 @@ class Dados_adicionar(APIView):
 
         enade = Enade()
         enade.ano = request.data["ano"]
-        enade.save()
-    
+
+
         arq = request.data["arquivo"]
         
         dados = pd.read_csv(arq, encoding = "UTF-8-sig", sep=";")
@@ -132,8 +133,8 @@ class Dados_adicionar(APIView):
         resultado.dobrasF = dados1['dobrasF']
         resultado.erro = dados1['erro']
         resultado.save()
-
-
+        enade.resultado = resultado
+        enade.save()
 
         objetos = []
         for i in range(dados.shape[0]):
@@ -210,7 +211,6 @@ class Dados_adicionar(APIView):
             obj_dados.questao67 = dados.loc[i, 'Questao_67']
             obj_dados.questao68 = dados.loc[i, 'Questao_68']
             obj_dados.enade = enade
-            obj_dados.resultado = resultado
             objetos.append(obj_dados)
         Dados.objects.bulk_create(objetos) #bulk_create insere obj contidos em um array no banco de dados
         
@@ -228,7 +228,17 @@ class ano_get(APIView):
     permission_classes = [permissions.AllowAny, ]
     def get(self, request, format=None):
         enade = Enade.objects.all().values('ano')
-        return  Response(enade, status=200)
+
+        return Response(enade, status=200)
+
+class get_knn(APIView):
+    permission_classes = [permissions.AllowAny, ]
+
+    def post(self, request, format=None):
+
+        enade = Enade.objects.get(ano = request.data['ano'])
+
+        return Response({"kVizinhos":enade.resultado.kVizinhos, "dobrasF":enade.resultado.dobrasF, "erro":enade.resultado.erro}, status=200)
 
 class processar_api(APIView):
     
@@ -238,79 +248,6 @@ class processar_api(APIView):
         enade = Enade.objects.get(ano=request.data["ano"])
         if(enade):
             dados = Dados.objects.filter(enade=enade)
-            colums = request.data["colums"]
-
-            colum_converter = {
-            'Codigo_instituicao': 'codigoInstituicao' ,
-            'org_academica': 'orgAcademica' ,
-            'area_curso': 'areaCurso' ,
-            'Codigo_curso': 'codigoCurso' ,
-            'Modalidade_Ensino': 'modalidadeEnsino' ,
-            'municipio_curso': 'municipioCurso' ,
-            'Idade': 'idade' ,
-            'Sexo': 'sexo' ,
-            'Ano_Final_EM': 'anoFinalEM' ,
-            'Inicio_Grad.': 'iniciograd',
-            'Turno_Grad.':'turnoGrad',
-            'Presenca_Enade': 'presencaenad',
-            'Questao_01':'questao01',
-            'Questao_02':'questao02',
-            'Questao_04':'questao04',
-            'Questao_05':'questao05',
-            'Questao_07':'questao07',
-            'Questao_08':'questao08',
-            'Questao_09':'questao09',
-            'Questao_11':'questao11',
-            'Questao_12':'questao12',
-            'Questao_13':'questao13',
-            'Questao_15':'questao15',
-            'Questao_16':'questao16',
-            'Questao_17':'questao17',
-            'Questao_21':'questao21',
-            'Questao_22':'questao22',
-            'Questao_23':'questao23',
-            'Questao_27':'questao27',
-            'Questao_28':'questao28',
-            'Questao_29':'questao29',
-            'Questao_30':'questao30',
-            'Questao_31':'questao31',
-            'Questao_32':'questao32',
-            'Questao_33':'questao33',
-            'Questao_34':'questao34',
-            'Questao_35':'questao35',
-            'Questao_36':'questao36',
-            'Questao_37':'questao37',
-            'Questao_38':'questao38',
-            'Questao_39':'questao39',
-            'Questao_40':'questao40',
-            'Questao_41':'questao41',
-            'Questao_42':'questao42',
-            'Questao_43':'questao43',
-            'Questao_44':'questao44',
-            'Questao_45':'questao45',
-            'Questao_46':'questao46',
-            'Questao_47':'questao47',
-            'Questao_48':'questao48',
-            'Questao_49':'questao49',
-            'Questao_50':'questao50',
-            'Questao_51':'questao51',
-            'Questao_52':'questao52',
-            'Questao_53':'questao53',
-            'Questao_54':'questao54',
-            'Questao_55':'questao55',
-            'Questao_56':'questao56',
-            'Questao_57':'questao57',
-            'Questao_58':'questao58',
-            'Questao_59':'questao59',
-            'Questao_60':'questao60',
-            'Questao_61':'questao61',
-            'Questao_62':'questao62',
-            'Questao_63':'questao63',
-            'Questao_64':'questao64',
-            'Questao_65':'questao65',
-            'Questao_66':'questao66',
-            'Questao_67':'questao67',
-            'Questao_68':'questao68'}
 
             data_values = {}
             for colum in request.data["colums"]:
@@ -350,7 +287,6 @@ class processar_api(APIView):
                             data_values[colum][line.questao05] = 1
                         else:
                             data_values[colum][line.questao05] += 1
-
         return  Response(data_values, status=200)
         # estado = Estado.objects.get(estado=request.data["estado"])
 
