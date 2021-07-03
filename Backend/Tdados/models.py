@@ -8,6 +8,7 @@ class Resultado(models.Model):
 class Enade(models.Model):
     ano = models.CharField(max_length= 16,blank= True, null=True, unique=True)
     resultado = models.ForeignKey(Resultado, on_delete=models.CASCADE, blank= True, null=True )
+
 class Estado(models.Model):
     id = models.IntegerField(primary_key=True)
     estado = models.CharField(max_length= 20,blank= True, null=True, unique=True)
@@ -83,9 +84,6 @@ class Dados(models.Model):
     questao66 = models.CharField(max_length= 16,blank= True, null=True)
     questao67 = models.CharField(max_length= 16,blank= True, null=True)
     questao68 = models.CharField(max_length= 16,blank= True, null=True)
-    # visinhos = models.CharField(max_length= 16,blank= True, null=True)
-    # dobras = models.CharField(max_length= 16,blank= True, null=True)
-    # erro = models.CharField(max_length= 16,blank= True, null=True)
     enade = models.ForeignKey(Enade, on_delete=models.CASCADE, blank= True, null=True )
 
 
