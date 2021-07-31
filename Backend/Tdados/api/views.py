@@ -50,18 +50,18 @@ def mineracao(dados):
     for i in dados.columns:
         # criar uma matriz X e o vetor y
         x = np.array(dados.iloc[:, 0:12]) 	
-        y = np.array(dados[i])    
+        y = np.array(dados[i])
 
-    # criação de intervpipalo de números ímpares de K para KNN
-    neighbors = list(range(1,100,2))
-
-    # criação de intervalo de f para k-fold
-    cv_list = list(range(10,40))
-
-    # criação da estrutura de listas para armazenar valores
+    #listas para armazenar valores
     k_list = []
     fold_list = []
     cv_scores = []
+
+    #intervalo de números ímpares de K para KNN
+    neighbors = list(range(1,100,2))
+
+    #intervalo de f para k-fold
+    cv_list = list(range(10,40))
 
     # executar KNN e k-fold cross validation
     for k in neighbors:
@@ -83,9 +83,9 @@ def mineracao(dados):
     index_opt = df_knn[df_knn['MSE'] == optimal_k].index.item()
 
     # resultados
+    print("Erro de classificação incorreta é %f" % optimal_k)
     print ("O número ótimo de k vizinhos é %d" % df_knn.loc[index_opt, 'k_list'] )
     print ("O número ideal de dobras f é %d" % df_knn.loc[index_opt, 'fold_list'] )
-    print ("Erro de classificação incorreta é %f" % optimal_k )
     return {'kVizinhos':df_knn.loc[index_opt, 'k_list'], 'dobrasF':df_knn.loc[index_opt, 'fold_list'], 'erro':optimal_k}
     
 
