@@ -62,7 +62,8 @@ def mineracao(dados):
 
     #intervalo de f para k-fold
     cv_list = list(range(10,40))
-
+ 
+ 
     # executar KNN e k-fold cross validation
     for k in neighbors:
         for f in cv_list:
